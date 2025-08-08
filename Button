@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pre-Blink Illusion</title>
+  <style>
+    /* Page setup */
+    html, body {
+      margin: 0;
+      padding: 0;
+      background-color: black;
+      height: 100%;
+      overflow: hidden;
+      font-family: sans-serif;
+    }
+
+    /* Center everything */
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      position: relative;
+    }
+
+    /* Circle light in the center */
+    .circle {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background-color: #222;
+      transition: background-color 0.1s ease;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      box-shadow: 0 0 30px #000;
+    }
+
+    .circle.blinking {
+      background-color: yellow;
+      box-shadow: 0 0 60px yellow;
+    }
+
+    /* Button at the bottom */
+    #blinkBtn {
+      margin-bottom: 40px;
+      padding: 1em 2em;
+      font-size: 1.2em;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      background: #333;
+      color: white;
+      transition: background-color 0.2s ease;
+    }
+
+    #blinkBtn:hover {
+      background-color: #444;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="circle" id="lightCircle"></div>
+  <button id="blinkBtn">Click Me</button>
+
+  <script>
+    const button = document.getElementById("blinkBtn");
+    const circle = document.getElementById("lightCircle");
+
+    let delay = 0;
+    let resetPhase = false;
+    let resetClicks = 0;
+    const maxDelay = 500;       // ms
+    const step = 50;            // ms per click
+    const blinkDuration = 1500; // ms
+    const resetCount = 5;       // clicks before building again
+
+    button.addEventListener("click", () => {
+      const currentDelay = delay;
+
+      setTimeout(() => {
+        circle.classList.add("blinking");
+        setTimeout(() => {
+          circle.classList.remove("blinking");
+        }, blinkDuration);
+      }, currentDelay);
+
+      // Update delay logic
+      if (resetPhase) {
+        resetClicks++;
+        if (resetClicks >= resetCount) {
+          resetPhase = false;
+          resetClicks = 0;
+        }
+      } else {
+        delay += step;
+        if (delay >= maxDelay) {
+          delay = 0;
+          resetPhase = true;
+        }
+      }
+    });
+  </script>
+</body>
+</html>
